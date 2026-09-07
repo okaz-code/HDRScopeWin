@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 # Single source of truth for the version: the resource block, the About box and the
 # release tag all read from here.
-project(HDRScope VERSION 1.0.1 LANGUAGES CXX)
+project(HDRScope VERSION 1.0.2 LANGUAGES CXX)
 
 if(NOT MSVC)
   message(FATAL_ERROR "HDRScope for Windows builds with MSVC. Use the Visual Studio generator.")
