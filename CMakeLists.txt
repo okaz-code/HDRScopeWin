@@ -54,6 +54,12 @@ target_link_libraries(HDRScope PRIVATE
   d3d11 dxgi d3dcompiler windowscodecs comctl32 comdlg32 ole32 oleaut32 shell32 shlwapi
   user32 gdi32 dwmapi windowsapp)
 
+# Static C runtime, so a downloaded binary runs on a machine that has never had a
+# Visual C++ redistributable installed. Nothing here crosses a DLL boundary, which is
+# what would otherwise make a static CRT the wrong choice.
+set_property(TARGET HDRScope PROPERTY
+  MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 set_target_properties(HDRScope PROPERTIES
   VS_DPI_AWARE "PerMonitor"
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/dist"
