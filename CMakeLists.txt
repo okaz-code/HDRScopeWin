@@ -45,6 +45,7 @@ add_executable(HDRScope WIN32
   src/Canvas.cpp
   src/MainWindow.cpp
   src/SelfTests.cpp
+  Resources/HDRScope.rc
 )
 
 target_include_directories(HDRScope PRIVATE "${CPPWINRT_INCLUDE_DIR}" src)

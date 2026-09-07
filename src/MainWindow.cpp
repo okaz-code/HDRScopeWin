@@ -26,6 +26,10 @@ enum : int {
     IDM_OPEN = 2001, IDM_SAVE_TIFF, IDM_SAVE_JXR, IDM_EXIT, IDM_COPY, IDM_ABOUT,
 };
 
+// Must match Resources/HDRScope.rc, where being resource 1 is what makes the shell
+// use this icon for the executable itself.
+constexpr int kAppIcon = 1;
+
 constexpr UINT WM_JOB_DONE = WM_APP + 1;
 constexpr UINT_PTR kDisplayTimer = 1;
 
@@ -669,7 +673,13 @@ int MainWindow::Run(HINSTANCE instance, const std::wstring& startupFile, Startup
     wc.lpszClassName = L"HDRScopeMain";
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-    wc.hIcon = LoadIconW(nullptr, IDI_APPLICATION);
+    // Loaded at both sizes so the title bar and the Alt+Tab list each get the entry
+    // drawn for them, rather than one scaled copy of the other.
+    wc.hIcon = (HICON)LoadImageW(instance, MAKEINTRESOURCEW(kAppIcon), IMAGE_ICON,
+                                 GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), 0);
+    wc.hIconSm = (HICON)LoadImageW(instance, MAKEINTRESOURCEW(kAppIcon), IMAGE_ICON,
+                                   GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
+    if (!wc.hIcon) wc.hIcon = LoadIconW(nullptr, IDI_APPLICATION);
     if (!RegisterClassExW(&wc)) {
         MessageBoxW(nullptr, L"ウィンドウクラスを登録できません。", L"HDRScope", MB_ICONERROR);
         return 1;

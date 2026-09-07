@@ -6,6 +6,10 @@ rem Configures once and builds. Everything lands in build\dist\HDRScope.exe.
 rem Override the generator with HDRSCOPE_GENERATOR if a different toolset is wanted.
 if "%HDRSCOPE_GENERATOR%"=="" set HDRSCOPE_GENERATOR=Visual Studio 17 2022
 
+rem The icon is committed, but regenerate it if the file is missing so a build never
+rem silently falls back to the stock Windows application icon.
+if not exist Resources\AppIcon.ico call tools\make-icon.cmd || exit /b 1
+
 if not exist build\CMakeCache.txt (
   cmake -S . -B build -G "%HDRSCOPE_GENERATOR%" -A x64 || exit /b 1
 )
