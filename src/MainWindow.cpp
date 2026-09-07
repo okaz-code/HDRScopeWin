@@ -196,8 +196,13 @@ void MainWindow::Layout() {
     const int row = Scaled(26, dpi_);
     const int sidebar = std::min(Scaled(300, dpi_), width / 3);
 
+    // SWP_NOCOPYBITS matters here. Without it Windows moves a control by copying its
+    // existing pixels and only invalidating what that copy did not cover, so a control
+    // that moved keeps the text it had at the old position: on a resize the readouts
+    // along the bottom end up blank or with two strings drawn over each other. Minimizing
+    // and restoring repaints everything, which is why the damage looks like it heals.
     auto place = [&](int id, int x, int y, int w, int h) {
-        SetWindowPos(GetDlgItem(window_, id), nullptr, x, y, w, h, SWP_NOZORDER);
+        SetWindowPos(GetDlgItem(window_, id), nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOCOPYBITS);
     };
 
     int x = pad, y = pad;
@@ -240,7 +245,7 @@ void MainWindow::Layout() {
     cy += row + Scaled(6, dpi_);
     int hintTop = top + bodyHeight - Scaled(20, dpi_);
     SetWindowPos(canvas_.Window(), nullptr, cx, cy, cw, std::max(Scaled(60, dpi_), hintTop - cy - Scaled(6, dpi_)),
-                 SWP_NOZORDER);
+                 SWP_NOZORDER | SWP_NOCOPYBITS);
     int hintWidth = std::min(Scaled(300, dpi_), cw / 2);
     place(IDC_HINT, cx, hintTop, hintWidth, Scaled(20, dpi_));
     place(IDC_EDR, cx + hintWidth, hintTop, cw - hintWidth, Scaled(20, dpi_));
