@@ -561,12 +561,14 @@ LRESULT MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         case IDM_COPY: canvas_.CopySample(); return 0;
         case IDM_EXIT: DestroyWindow(hwnd); return 0;
         case IDM_ABOUT:
+            // The version comes from the project definition, the same place the file's
+            // version resource reads, so the two cannot disagree.
             MessageBoxW(hwnd,
-                L"HDRScope for Windows\n\n"
-                L"HDRウィンドウキャプチャ・表示・RGB測定ツール。\n"
-                L"Windows.Graphics.Capture で scRGB float16 のまま取得し、\n"
-                L"SDR基準白で正規化した拡張リニアsRGBで測定します。\n\n"
-                L"MIT License",
+                Widen(Format("HDRScope for Windows %s\n\n", HDRSCOPE_VERSION)
+                      + "HDRウィンドウキャプチャ・表示・RGB測定ツール。\n"
+                        "Windows.Graphics.Capture で scRGB float16 のまま取得し、\n"
+                        "SDR基準白で正規化した拡張リニアsRGBで測定します。\n\n"
+                        "MIT License").c_str(),
                 L"HDRScopeについて", MB_OK | MB_ICONINFORMATION);
             return 0;
         case IDC_SHOW_ALL:

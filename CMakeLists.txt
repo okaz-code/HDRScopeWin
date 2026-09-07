@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
-project(HDRScope CXX)
+# Single source of truth for the version: the resource block, the About box and the
+# release tag all read from here.
+project(HDRScope VERSION 1.0.1 LANGUAGES CXX)
 
 if(NOT MSVC)
   message(FATAL_ERROR "HDRScope for Windows builds with MSVC. Use the Visual Studio generator.")
@@ -31,6 +33,8 @@ if(NOT CPPWINRT_INCLUDE_DIR)
 endif()
 message(STATUS "C++/WinRT headers: ${CPPWINRT_INCLUDE_DIR}")
 
+configure_file(Resources/HDRScope.rc.in "${CMAKE_CURRENT_BINARY_DIR}/HDRScope.rc" @ONLY)
+
 add_executable(HDRScope WIN32
   src/main.cpp
   src/Common.cpp
@@ -45,12 +49,13 @@ add_executable(HDRScope WIN32
   src/Canvas.cpp
   src/MainWindow.cpp
   src/SelfTests.cpp
-  Resources/HDRScope.rc
+  "${CMAKE_CURRENT_BINARY_DIR}/HDRScope.rc"
 )
 
 target_include_directories(HDRScope PRIVATE "${CPPWINRT_INCLUDE_DIR}" src)
 target_compile_options(HDRScope PRIVATE /utf-8 /W4 /permissive- /Zc:__cplusplus)
-target_compile_definitions(HDRScope PRIVATE UNICODE _UNICODE NOMINMAX WIN32_LEAN_AND_MEAN)
+target_compile_definitions(HDRScope PRIVATE UNICODE _UNICODE NOMINMAX WIN32_LEAN_AND_MEAN
+  HDRSCOPE_VERSION="${PROJECT_VERSION}")
 target_link_libraries(HDRScope PRIVATE
   d3d11 dxgi d3dcompiler windowscodecs comctl32 comdlg32 ole32 oleaut32 shell32 shlwapi
   user32 gdi32 dwmapi windowsapp)
